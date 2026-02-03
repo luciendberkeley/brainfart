@@ -12,7 +12,8 @@ int getInstructionChars(char outPoint[], char filePath[]) {
   char text[128];
   FILE *filePtr;
 
-  fopen_s(&filePtr, filePath, "r");
+  // Windows: fopen_s(&filePtr, filePath, "r");
+  filePtr = fopen(filePath, "r");
 
   int instructionIndex = 0;
 
