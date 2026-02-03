@@ -12,7 +12,9 @@ int getInstructionChars(char outPoint[], char filePath[]) {
   char text[128];
   FILE *filePtr;
 
-  // Windows: fopen_s(&filePtr, filePath, "r");
+  // Windows:
+  // fopen_s(&filePtr, filePath, "r");
+  // Other:
   filePtr = fopen(filePath, "r");
 
   int instructionIndex = 0;
@@ -60,6 +62,7 @@ int main() {
   printf("\n");
 
   // All the execution code and memory will go here later on
+
 
   return 0;
 }

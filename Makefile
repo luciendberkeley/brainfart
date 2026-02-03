@@ -1,3 +1,6 @@
 run:
 	cc -o main main.c
-	./main.exe
+	# Windows:
+	#./main.exe
+	# Other:
+	./main
