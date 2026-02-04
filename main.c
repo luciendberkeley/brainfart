@@ -54,9 +54,47 @@ int getStrLen(char *s) {
   return len;
 }
 
+int endLoopIndex(char instructions[], int count, int index) {
+  int opensFound = 0;
+
+  for(int i=index; i < count; i++) {
+    if(instructions[i] == 91) {
+      opensFound++;
+    }
+
+    if(instructions[i] == 93) {
+      opensFound--;
+      if(opensFound == 0) {
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
+int startLoopIndex(char instructions[], int count, int index) {
+  int closesFound = 0;
+
+  for(int i=index; i >= 0; i--) {
+    if(instructions[i] == 93) {
+      closesFound++;
+    }
+
+    if(instructions[i] == 91) {
+      closesFound--;
+      if(closesFound == 0) {
+        return i;
+      }
+    }
+  }
+
+  return -1;
+}
+
 void processInstructions(char instructions[], int count, uint8_t memory[], int *pointer, int size, char *input) {
   printf("\n\nPROGRAM:\n");
-  printf("---------------------------------\n\n");
+  printf("---------------------------------\n");
 
   *pointer = 0;
   for(int i=0; i < size; i++) {
@@ -75,11 +113,15 @@ void processInstructions(char instructions[], int count, uint8_t memory[], int *
     switch(instructions[i]) {
       case 62:
         // Right
-        (*pointer)++;
+        if(*pointer < size) {
+          (*pointer)++;
+        }
         break;
       case 60:
         // Left
-        (*pointer)--;
+        if(*pointer > 0) {
+          (*pointer)--;
+        }
         break;
       case 43:
         // Incr
@@ -104,14 +146,22 @@ void processInstructions(char instructions[], int count, uint8_t memory[], int *
         break;
       case 91:
         // Loop start
+        if(memory[*pointer] == 0) {
+          // Move to the ending of this loop + 1
+          i = endLoopIndex(instructions, count, i);
+        }
         break;
       case 93:
         // Loop end
+        if(memory[*pointer] != 0) {
+          // Move back to beginning of loop + 1
+          i = startLoopIndex(instructions, count, i);
+        }
         break;
     }
   }
   
-  printf("\n\n---------------------------------\n");
+  printf("\n---------------------------------\n");
   printf("END PROGRAM\n\n");
 }
 
