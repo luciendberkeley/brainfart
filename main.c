@@ -103,7 +103,7 @@ int main() {
 
   printf("Parse Tokens\n");
   char instructionChars[128];
-  int instructionCount = getInstructionChars(instructionChars, "test.txt");
+  int instructionCount = getInstructionChars(instructionChars, "test.bf");
 
   printf("Readable:\n[");
   for(int i=0; i < instructionCount; i++) {
