@@ -42,7 +42,19 @@ int getInstructionChars(char outPoint[], char filePath[]) {
   return instructionIndex;
 }
 
-void processInstructions(char instructions[], int count, uint8_t memory[], int *pointer, int size) {
+int getStrLen(char *s) {
+  char *tempPtr = s;
+  int len = 0;
+  while(*tempPtr != '\0') {
+    len++;
+
+    tempPtr++;
+  }
+
+  return len;
+}
+
+void processInstructions(char instructions[], int count, uint8_t memory[], int *pointer, int size, char *input) {
   printf("\n\nPROGRAM:\n");
   printf("---------------------------------\n\n");
 
@@ -50,7 +62,14 @@ void processInstructions(char instructions[], int count, uint8_t memory[], int *
   for(int i=0; i < size; i++) {
     memory[i] = 0;
   }
-  
+
+  int inputLen = getStrLen(input);
+  uint8_t inputBytes[inputLen];
+  for(int i=0; i < inputLen; i++) {
+    inputBytes[i] = input[i];
+  }
+
+  int inputIndex = 0;
 
   for(int i=0; i < count; i++) {
     switch(instructions[i]) {
@@ -76,6 +95,12 @@ void processInstructions(char instructions[], int count, uint8_t memory[], int *
         break;
       case 44:
         // Input byte
+        if(inputIndex >= inputLen) {
+          memory[*pointer] = 0;
+        } else {
+          memory[*pointer] = input[inputIndex];
+        }
+        inputIndex++;
         break;
       case 91:
         // Loop start
@@ -98,12 +123,23 @@ void printMemory(uint8_t memory[], int *pointer, int size) {
   printf("]. Pointer Pos: %i\n", *pointer);
 }
 
-int main() {
+int main(int argc, char *argv[]) {
+  if(argc == 1) {
+    printf("Wrong usage. Must run with <programPath> and optionally <inputsPath> parameters.");
+    return 1;
+  }
+
+  char *programFile = argv[1];
+  char *input = "";
+  if(argc == 3) {
+    input = argv[2];
+  }
+
   printf("Starting\n\n");
 
   printf("Parse Tokens\n");
   char instructionChars[128];
-  int instructionCount = getInstructionChars(instructionChars, "test.bf");
+  int instructionCount = getInstructionChars(instructionChars, programFile);
 
   printf("Readable:\n[");
   for(int i=0; i < instructionCount; i++) {
@@ -122,7 +158,7 @@ int main() {
   int memorySize = 10;
 	uint8_t memory[memorySize];
   int pointer = 0;
-  processInstructions(instructionChars, instructionCount, memory, &pointer, memorySize);
+  processInstructions(instructionChars, instructionCount, memory, &pointer, memorySize, input);
 
   printMemory(memory, &pointer, memorySize);
 
