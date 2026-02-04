@@ -9,7 +9,7 @@ int charInArr(char c, char *arr[], int len) {
 }
 
 int getInstructionChars(char outPoint[], char filePath[]) {
-  char text[128];
+  char text[256];
   FILE *filePtr;
 
   // Windows:
@@ -175,7 +175,7 @@ void printMemory(uint8_t memory[], int *pointer, int size) {
 
 int main(int argc, char *argv[]) {
   if(argc == 1) {
-    printf("Wrong usage. Must run with <programPath> and optionally <inputsPath> parameters.");
+    printf("Wrong usage. Must run with <programPath> and optionally <input> parameters.\n");
     return 1;
   }
 
@@ -205,7 +205,7 @@ int main(int argc, char *argv[]) {
   printf("]\n\n");
 
   // All the execution code and memory will go here later on
-  int memorySize = 10;
+  int memorySize = 50;
 	uint8_t memory[memorySize];
   int pointer = 0;
   processInstructions(instructionChars, instructionCount, memory, &pointer, memorySize, input);

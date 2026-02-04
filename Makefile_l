@@ -1,5 +1,7 @@
 run:
 	cc -o main main.c
-	@echo "Input: "; \
+	@echo "File Path: "; \
+	read FILE; \
+	echo "Input: "; \
 	read INPUT; \
-	./main "test.bf" $$INPUT
+	./main $$FILE $$INPUT
