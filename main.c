@@ -191,18 +191,24 @@ int main(int argc, char *argv[]) {
   char instructionChars[128];
   int instructionCount = getInstructionChars(instructionChars, programFile);
 
-  printf("Readable:\n[");
+  printf("Program Arr:\n[");
   for(int i=0; i < instructionCount; i++) {
     printf("\"%c\"%s", instructionChars[i], i != instructionCount - 1 ? ", " : "");
   }
   printf("]\n\n");
-
+  
   printf("Chars:\n[");
   
   for(int i=0; i < instructionCount; i++) {
     printf("%u%s", instructionChars[i], i != instructionCount - 1 ? ", " : "");
   }
-  printf("]\n\n");
+  printf("]\n\n\n");
+  
+  printf("Program Simplified:\n");
+  for(int i=0; i < instructionCount; i++) {
+    printf("%c", instructionChars[i]);
+  }
+  printf("\nLength: %d\n", instructionCount);
 
   // All the execution code and memory will go here later on
   int memorySize = 50;
