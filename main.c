@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <stdint.h>
 
 int charInArr(char c, char *arr[], int len) {
@@ -90,8 +92,6 @@ int startLoopIndex(char instructions[], int count, int index) {
 }
 
 void processInstructions(char instructions[], int count, uint8_t memory[], int *pointer, int size, char *input) {
-  printf("\n\nPROGRAM:\n");
-  printf("---------------------------------\n");
 
   *pointer = 0;
   for(int i=0; i < size; i++) {
@@ -158,8 +158,6 @@ void processInstructions(char instructions[], int count, uint8_t memory[], int *
     }
   }
   
-  printf("\n---------------------------------\n");
-  printf("END PROGRAM\n\n");
 }
 
 void printMemory(uint8_t memory[], int *pointer, int size) {
@@ -171,49 +169,85 @@ void printMemory(uint8_t memory[], int *pointer, int size) {
 }
 
 int main(int argc, char *argv[]) {
-  if(argc == 1) {
-    printf("Incorrect usage. Must run with <programPath> and optionally an <input> parameter.\n");
-    return 1;
-  }
-
-  char *programFile = argv[1];
+	int debug = 0;
   char *input = "";
-  if(argc == 3) {
-    input = argv[2];
-  }
 
-  printf("Starting\n\n");
+	int opt;
+	while((opt = getopt(argc, argv, "hdi:")) != -1) {
+		switch(opt) {
+			case 'h':
+				printf("Usage: brainfart [options] file\n  -h  Show this Page\n  -d  Debug Mode\n  -i [input]  Takes in input and gives it to program\n");
+				exit(EXIT_SUCCESS);
+			case 'd':
+				debug = 1;
+				break;
+			case 'i':
+				if(optarg != NULL) {
+					input = optarg;
+				} else {
+					fprintf(stderr, "-i takes in input, try -h\n");
+					exit(EXIT_FAILURE);
+				}
+				break;
+			case '?':
+				fprintf(stderr, "Invalid option, try -h\n");
+				exit(EXIT_FAILURE);
+		}
+	}
+	
+	if(optind >= argc) {
+		fprintf(stderr, "Invalid option, try -h\n");
+		exit(EXIT_FAILURE);
+	}
 
-  printf("Parse Tokens\n");
+  char *programFile = argv[optind];
+
+	if(debug) {
+		printf("Starting\n\n");
+
+		printf("Parse Tokens\n");
+	}
   char instructionChars[128];
   int instructionCount = getInstructionChars(instructionChars, programFile);
 
-  printf("Program Arr:\n[");
-  for(int i=0; i < instructionCount; i++) {
-    printf("\"%c\"%s", instructionChars[i], i != instructionCount - 1 ? ", " : "");
-  }
-  printf("]\n\n");
-  
-  printf("Chars:\n[");
-  
-  for(int i=0; i < instructionCount; i++) {
-    printf("%u%s", instructionChars[i], i != instructionCount - 1 ? ", " : "");
-  }
-  printf("]\n\n\n");
-  
-  printf("Program Simplified:\n");
-  for(int i=0; i < instructionCount; i++) {
-    printf("%c", instructionChars[i]);
-  }
-  printf("\nLength: %d\n", instructionCount);
+	if(debug) {
+		printf("Program Arr:\n[");
+		for(int i=0; i < instructionCount; i++) {
+			printf("\"%c\"%s", instructionChars[i], i != instructionCount - 1 ? ", " : "");
+		}
+		printf("]\n\n");
+		
+		printf("Chars:\n[");
+		
+		for(int i=0; i < instructionCount; i++) {
+			printf("%u%s", instructionChars[i], i != instructionCount - 1 ? ", " : "");
+		}
+		printf("]\n\n\n");
+		
+		printf("Program Simplified:\n");
+		for(int i=0; i < instructionCount; i++) {
+			printf("%c", instructionChars[i]);
+		}
+		printf("\nLength: %d\n", instructionCount);
+	}
 
   // All the execution code and memory will go here later on
   int memorySize = 50;
 	uint8_t memory[memorySize];
   int pointer = 0;
+	if(debug) {
+		printf("\n\nPROGRAM:\n");
+		printf("---------------------------------\n");
+	}
   processInstructions(instructionChars, instructionCount, memory, &pointer, memorySize, input);
+	if(debug) {
+		printf("\n---------------------------------\n");
+		printf("END PROGRAM\n\n");
+	}
 
-  printMemory(memory, &pointer, memorySize);
+	if(debug) {
+		printMemory(memory, &pointer, memorySize);
+	}
 
   return 0;
 }
