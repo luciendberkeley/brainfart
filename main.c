@@ -12,10 +12,7 @@ int getInstructionChars(char outPoint[], char filePath[]) {
   char text[256];
   FILE *filePtr;
 
-  // Windows:
-  fopen_s(&filePtr, filePath, "r");
-  // Other:
-  // filePtr = fopen(filePath, "r");
+  filePtr = fopen(filePath, "r");
 
   int instructionIndex = 0;
 
@@ -175,7 +172,7 @@ void printMemory(uint8_t memory[], int *pointer, int size) {
 
 int main(int argc, char *argv[]) {
   if(argc == 1) {
-    printf("Wrong usage. Must run with <programPath> and optionally <input> parameters.\n");
+    printf("Incorrect usage. Must run with <programPath> and optionally an <input> parameter.\n");
     return 1;
   }
 

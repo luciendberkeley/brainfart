@@ -1,7 +1,0 @@
-run:
-	cc -o main main.c
-	@echo "File Path: "; \
-	read FILE; \
-	echo "Input: "; \
-	read INPUT; \
-	./main $$FILE $$INPUT
